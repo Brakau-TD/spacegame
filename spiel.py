@@ -53,7 +53,6 @@ while running:
     for rect in rects:
         
         if rect.collidepoint(mouse_pos):
-            print("Collision detected!")
             rects.remove(rect)
                 
     # Draw the rectangles
