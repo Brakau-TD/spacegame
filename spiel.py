@@ -8,12 +8,12 @@ schrift = pygame.font.SysFont('comicsans', 40)
 
 WHITE = (255, 255, 255)
 
-# Rechtecke erstellen
-# die Rechtecke werden in einer Liste gespeichert
-# wichtig sind eigentlich nur die Startkoordinaten (x,y), 
-# die in den ersten beiden Werten angegeben werden (z.B. 100, 100)
-# die Rechtecke werden nicht gezeichnet, sondern dienen nur dazu,
-# die Koordinaten für die Asteroide o.ä. zu speichern
+# Create rectangles
+# the rectangles are stored in a list
+# only the starting coordinates (x,y) are important, 
+# which are specified in the first two values (e.g. 100, 100)
+# the rectangles are not drawn, but only serve to
+# save the coordinates for the asteroids or similar
 rects = [
     pygame.Rect(100, 100, 50, 50),
     pygame.Rect(200, 200, 50, 50),
@@ -35,8 +35,8 @@ bilder = [
 ]
 
 
-# Richtungen festlegen
-# es müssen so viele Richtungen festgelegt werden, wie ihr Rechtecke in Rects habt
+# set directions for each sprite
+# there have to be as many direction-tuples as there are sprites
 richtung = [
     (1, 1),
     (-1, 0),
@@ -46,7 +46,7 @@ richtung = [
     (0, -1),
 ]
 
-# das Bild für den Mauszeiger an der Mausposition festlegem
+# setting an image to the mouse-pointer
 pointer_rect = pygame.Rect(pygame.mouse.get_pos(), (20, 20))
 
 clock = pygame.time.Clock()
@@ -60,8 +60,7 @@ while running:
     mouse_pos = pygame.mouse.get_pos()
     pointer_rect = pygame.Rect(mouse_pos, (50, 50))
 
-    # Überprüfung der Kollision: berührt der Mauszeiger einen
-    # Asteroiden? Wenn ja, dann wird der Asteroid aus der Liste entfernt
+   #collision detection for asteroids
     for i, rect in enumerate(rects):
         if rect.colliderect(pointer_rect):
             rects.remove(rect)
@@ -70,7 +69,7 @@ while running:
             bilder.pop(i)
             print(score)
 
-    # Zeichnet die Hintergrundgrafik und die Asteroiden
+    # draw the background
     bildschirm.blit(hintergrund, (0, 0))
 
     for i, rect in enumerate(rects):
@@ -94,7 +93,7 @@ while running:
     bildschirm.blit(scoretext,(20, 20))
 
     clock.tick(60)
-    # Das Bild wird aktualisiert
+
     pygame.display.update()
 
 pygame.quit()
