@@ -1,46 +1,61 @@
-from objekte import *
-from bildschirm_zeichnen import *
-clock = pygame.time.Clock()
+"""
+Hauptmodul des Spiels. 
+Zuerst werden einige andere Module (Files mit Funktionen) importiert, die für das Spiel benötigt werden,
+    das Programm ist also tatsächlich in mehrere Dateien aufgeteilt und größer als es auf den ersten Blick erscheint.
+Danach wird das Spiel gestartet und die Spiellogik ausgeführt.
+"""
+import pygame
+from spielobjekte import spielersprite, gegnersprites
+from spielbilderzeichnen import SpielBild
+from hintergrundlogik import kollision_pruefen, pruefe_spielende, bewegung_aktualisieren
 
-def kollision(spielersprite,gegnersprite):
-    if gegnersprite.ist_kollision(spielersprite):
-        return True
-    else:
-        return False
-    
-def kollision_pruefen(spielstand,spielersprite,gegnersprite, abbrechen):
-    if kollision(spielersprite,gegnersprite):
-        spielstand += 1
-        # gegnersprite.neue_position_setzen(random.randint(0,fensterbreite),random.randint(0,fensterhoehe))
-        abbrechen = False
-    if spielstand > 100:
-        abbrechen = True
-    return spielstand, abbrechen
 
-def bewegung_aktualisieren(spielersprite,gegnersprite):
-    maus_position = pygame.mouse.get_pos()
-    gegnersprite.neue_position_rechnen()
-    gegnersprite.ist_ausserhalb()
-    spielersprite.neue_position_setzen(maus_position[0],maus_position[1])
+class Spiel:
+    def __init__(self, gegnersprites, spielersprite):
+        """
+        Die Klasse 'Spiel' ist die Hauptklasse des Spiels.
+        Zu Anfang werden die wichtigen Attribute und Objekte des Spiels initialisiert
+        Über die Methode 'spiel_spielen' wird das Spiel gestartet.
+        """
+        self.gegnersprites = gegnersprites
+        self.spielersprite = spielersprite
+        self.spielstand = 0
+        self.spiel_vorbei = False
 
-def spiel_spielen(gegnersprite,spielersprite):
-    abbrechen = False
-    spielstand = 0
-    pygame.mouse.set_visible(False)
-    while not abbrechen:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                abbrechen = True
+    def spiel_spielen(self):
+        """
+        Das Hauptprogramm des Spiels. Vor der While-Schleife wird der Mauszeiger ausgeblendet, 
+        damit er nicht stört. 
+        Die While-Schleife läuft mit 60 Bildern pro Sekunde, solange bis die Variable spiel_vorbei auf True gesetzt wird.
+        D.h. alles was unterhalb der While-Schleife eingerückt ist, wird so lange ausgeführt, bis das Spiel vorbei ist.
+        """
+        clock = pygame.time.Clock()
+        pygame.mouse.set_visible(False)
 
-        spielstand, abbrechen = kollision_pruefen(spielstand,spielersprite,gegnersprite, abbrechen)
+        while not self.spiel_vorbei:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.spiel_vorbei = True
 
-        bewegung_aktualisieren(spielersprite,gegnersprite)
+            self.spiellogik_pruefen()
 
-        spielbild_zeichnen(spielersprite,gegnersprite,spielfenster,spielstand)
-        clock.tick(60)
-    
-    gewonnen(spielstand,spielfenster,gameoverbild)
-    pygame.quit()
+            SpielBild.spielbild_zeichnen(self.spielersprite,self.gegnersprites,self.spielstand)
+            clock.tick(60)
+        
+        SpielBild.spielende_zeichnen(self.spielstand)
+        pygame.quit()
+
+    def spiellogik_pruefen(self):
+        """
+        Führt die Aktionen aus, die im Spiel vorkommen können.
+        die Funktionen kollision_pruefen, gewinnbedingung_pruefen und bewegung_aktualisieren werden aufgerufen.
+        In den Import-Zeilen steht, in welchen Modulen diese Funktionen definiert sind.
+        """
+        self.spielstand += kollision_pruefen(self.spielersprite,self.gegnersprites)
+        self.spiel_vorbei = pruefe_spielende(self.spielstand, parameter = None)
+        bewegung_aktualisieren(self.spielersprite,self.gegnersprites,pygame.mouse.get_pos())
 
 # starte das Spiel
-spiel_spielen(gegnersprites,spielersprite)
+spiel = Spiel(gegnersprites,spielersprite)
+spiel.spiel_spielen()
+
