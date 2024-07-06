@@ -1,7 +1,5 @@
-import time
-import random
-from grafiken import *
 from objekte import *
+from bildschirm_zeichnen import *
 clock = pygame.time.Clock()
 
 def kollision(spielersprite,gegnersprite):
@@ -9,22 +7,7 @@ def kollision(spielersprite,gegnersprite):
         return True
     else:
         return False
-
-def spielbild_zeichnen(spielersprite,gegnersprite,spielfenster,spielstandtext):
-    spielfenster.hintergrund_zeichnen()
-    spielfenster.text_zeichnen(spielstandtext,(20,20))
-    gegnersprite.zeichnen(spielfenster)
-    spielersprite.zeichnen(spielfenster)
-    pygame.display.update()
-
-def gewonnen(spielstand,spielfenster):
-    time.sleep(0.25)
-    spielfenster.neues_hintergrund_bild(gameoverbild)
-    spielfenster.hintergrund_zeichnen()
-    spielfenster.text_zeichnen(spielstand,(500,200))
-    pygame.display.update()
-    time.sleep(5)
-
+    
 def kollision_pruefen(spielstand,spielersprite,gegnersprite, abbrechen):
     if kollision(spielersprite,gegnersprite):
         spielstand += 1
@@ -43,6 +26,7 @@ def bewegung_aktualisieren(spielersprite,gegnersprite):
 def spiel_spielen(gegnersprite,spielersprite):
     abbrechen = False
     spielstand = 0
+    pygame.mouse.set_visible(False)
     while not abbrechen:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -55,7 +39,8 @@ def spiel_spielen(gegnersprite,spielersprite):
         spielbild_zeichnen(spielersprite,gegnersprite,spielfenster,spielstand)
         clock.tick(60)
     
-    gewonnen(spielstand,spielfenster)
+    gewonnen(spielstand,spielfenster,gameoverbild)
     pygame.quit()
 
+# starte das Spiel
 spiel_spielen(gegnersprites,spielersprite)
