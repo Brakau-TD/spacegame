@@ -1,100 +1,61 @@
+import time
+import random
 from grafiken import *
-import os
-
-pygame.init()
-pygame.font.init()
-
-schrift = pygame.font.SysFont('comicsans', 40)
-
-WHITE = (255, 255, 255)
-
-# Rechtecke erstellen
-# die Rechtecke werden in einer Liste gespeichert
-# wichtig sind eigentlich nur die Startkoordinaten (x,y), 
-# die in den ersten beiden Werten angegeben werden (z.B. 100, 100)
-# die Rechtecke werden nicht gezeichnet, sondern dienen nur dazu,
-# die Koordinaten für die Asteroide o.ä. zu speichern
-rects = [
-    pygame.Rect(100, 100, 50, 50),
-    pygame.Rect(200, 200, 50, 50),
-    pygame.Rect(300, 300, 50, 50),
-    pygame.Rect(10, 100, 50, 50),
-    pygame.Rect(20, 200, 50, 50),
-    pygame.Rect(30, 300, 50, 50),
-]
-
-score = 0
-
-bilder = [
-    [asteroid,5],
-    [asteroid,5],
-    [asteroid2,-10],
-    [asteroid,5],
-    [asteroid,5],
-    [asteroid2,-10]
-]
-
-
-# Richtungen festlegen
-# es müssen so viele Richtungen festgelegt werden, wie ihr Rechtecke in Rects habt
-richtung = [
-    (1, 1),
-    (-1, 0),
-    (0, -1),
-    (1, 1),
-    (-1, 0),
-    (0, -1),
-]
-
-# das Bild für den Mauszeiger an der Mausposition festlegem
-pointer_rect = pygame.Rect(pygame.mouse.get_pos(), (20, 20))
-
+from objekte import *
 clock = pygame.time.Clock()
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+def kollision(spielersprite,gegnersprite):
+    if gegnersprite.ist_kollision(spielersprite):
+        return True
+    else:
+        return False
 
-    mouse_pos = pygame.mouse.get_pos()
-    pointer_rect = pygame.Rect(mouse_pos, (50, 50))
-
-    # Überprüfung der Kollision: berührt der Mauszeiger einen
-    # Asteroiden? Wenn ja, dann wird der Asteroid aus der Liste entfernt
-    for i, rect in enumerate(rects):
-        if rect.colliderect(pointer_rect):
-            rects.remove(rect)
-            richtung.pop(i)
-            score = score + bilder[i][1]
-            bilder.pop(i)
-            print(score)
-
-    # Zeichnet die Hintergrundgrafik und die Asteroiden
-    bildschirm.blit(hintergrund, (0, 0))
-
-    for i, rect in enumerate(rects):
-        rect.x += richtung[i][0]
-        rect.y += richtung[i][1]
-
-        bildschirm.blit(bilder[i][0], (rect.x, rect.y))
-
-        if rect.x > 854:
-            rect.x = - 64
-        elif rect.x < -64:
-            rect.x = 854
-        if rect.y > 480:
-            rect.y = - 64
-        elif rect.y < -64:
-            rect.y = 480
-
-    bildschirm.blit(roboter, mouse_pos)
-
-    scoretext = schrift.render("Score: " + str(score),1,WHITE)
-    bildschirm.blit(scoretext,(20, 20))
-
-    clock.tick(60)
-    # Das Bild wird aktualisiert
+def spielbild_zeichnen(spielersprite,gegnersprite,spielfenster,spielstandtext):
+    spielfenster.hintergrund_zeichnen()
+    spielfenster.text_zeichnen(spielstandtext,(20,20))
+    gegnersprite.zeichnen(spielfenster)
+    spielersprite.zeichnen(spielfenster)
     pygame.display.update()
 
-pygame.quit()
+def gewonnen(spielstand,spielfenster):
+    time.sleep(0.25)
+    spielfenster.neues_hintergrund_bild(gameoverbild)
+    spielfenster.hintergrund_zeichnen()
+    spielfenster.text_zeichnen(spielstand,(500,200))
+    pygame.display.update()
+    time.sleep(5)
+
+def kollision_pruefen(spielstand,spielersprite,gegnersprite, abbrechen):
+    if kollision(spielersprite,gegnersprite):
+        spielstand += 1
+        # gegnersprite.neue_position_setzen(random.randint(0,fensterbreite),random.randint(0,fensterhoehe))
+        abbrechen = False
+    if spielstand > 100:
+        abbrechen = True
+    return spielstand, abbrechen
+
+def bewegung_aktualisieren(spielersprite,gegnersprite):
+    maus_position = pygame.mouse.get_pos()
+    gegnersprite.neue_position_rechnen()
+    gegnersprite.ist_ausserhalb()
+    spielersprite.neue_position_setzen(maus_position[0],maus_position[1])
+
+def spiel_spielen(gegnersprite,spielersprite):
+    abbrechen = False
+    spielstand = 0
+    while not abbrechen:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                abbrechen = True
+
+        spielstand, abbrechen = kollision_pruefen(spielstand,spielersprite,gegnersprite, abbrechen)
+
+        bewegung_aktualisieren(spielersprite,gegnersprite)
+
+        spielbild_zeichnen(spielersprite,gegnersprite,spielfenster,spielstand)
+        clock.tick(60)
+    
+    gewonnen(spielstand,spielfenster)
+    pygame.quit()
+
+spiel_spielen(gegnersprites,spielersprite)
