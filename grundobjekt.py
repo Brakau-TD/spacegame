@@ -14,10 +14,11 @@ class Grundobjekt(pygame.sprite.Sprite):
     - hole_richtung: gibt die aktuelle Bewegungsrichtung des Sprites zurück
     - setze_richtung(x,y): setzt die Bewegungsrichtung des Sprites auf die übergebenen Koordinaten
     """
-    def __init__(self, x,y,breite,hoehe,richtung,bildpfad,name):
+    def __init__(self, x,y,breite,hoehe,richtung,bildpfad,name,speed):
         self.name = name
         self.breite = breite
         self.hoehe = hoehe
+        self.speed = speed
         self.spritebild = pygame.image.load(bildpfad).convert_alpha()
         self.rect = self.scale(breite,hoehe)
         if self.name != "spieler":
@@ -41,8 +42,8 @@ class Grundobjekt(pygame.sprite.Sprite):
         """
         errechnet eine neue Position für das Sprite, wenn dieses sich bewegen soll
         """
-        self.rect.x += self.richtung[0]
-        self.rect.y += self.richtung[1]
+        self.rect.x += round(self.richtung[0]*self.speed)
+        self.rect.y += round(self.richtung[1]*self.speed)
         self.rect.topleft = (self.rect.x,self.rect.y)
         
     def neue_position_setzen(self,x,y):

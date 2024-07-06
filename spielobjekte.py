@@ -15,8 +15,8 @@ class Sprite(Grundobjekt):
     Diese Klasse erbt von der Klasse Grundobjekt, die weitere Methoden für alle Spielobjekte bereitstellt.
     
     """
-    def __init__(self, x,y,breite,hoehe,richtung,bildpfad,name,gesundheit,energie):
-        super().__init__(x,y,breite,hoehe,richtung,bildpfad,name)
+    def __init__(self, x,y,breite,hoehe,richtung,bildpfad,name,gesundheit,energie,speed):
+        super().__init__(x,y,breite,hoehe,richtung,bildpfad,name,speed)
         self.fensterdata = fensterdata
         self.gesundheit = gesundheit # Gesundheits-Wert des Sprites. Damit können wir bestimmt später noch was anfangen
         self.energie = energie # Energie-Wert des Sprites. Damit können wir bestimmt später noch was anfangen
@@ -60,10 +60,23 @@ class Sprite(Grundobjekt):
         """
         self.energie = neue_energie
 
-    
 
-gegnerliste = []
-gegneranzahl = 1
-gegnername = "asteroid"+str(gegneranzahl)
-gegnersprites = Sprite(x= 100,y= 100,breite = 50,hoehe = 50,richtung = (1,1),bildpfad = "asteroid.png",name = gegnername, gesundheit = 25,energie = 50)
-spielersprite = Sprite(x= 100,y= 100,breite = 64,hoehe = 64,richtung = (0,0),bildpfad = "roboter.png",name = "spieler", gesundheit=100,energie = 50)
+# du willst mehr als einen Gegner? Dann kannst du das hier machen
+# gebe der Gegnerliste einfach mehrere Gegner hinzu, die du so erstellst wie unten
+# z.B. gegnerliste = [gegner1,gegner2] und so weiter
+# du willst eigene Sprites erstellen? Dann kannst du das hier machen
+# gehe auf https://www.piskelapp.com/p/create/sprite und erstelle dir ein eigenes Sprite -> die Größe ist dort 32x32 Pixel,
+# du kannst aber auch eine andere Größe wählen, wenn du das Bild dann in der Größe anpasst
+# speichere das Sprite als .png Datei in den Programmordner
+# und erstelle ein neues Sprite-Objekt mit den gewünschten Parametern
+# experimentiere mit den x,y Koordinaten, der Größe, der Richtung, der Geschwindigkeit, der Gesundheit und der Energie
+# die Richtungen funktionieren so: (1,0) bewegt sich das Sprite nach rechts, (0,1) bewegt sich das Sprite nach unten
+# (1,1) bewegt sich das Sprite diagonal nach rechts unten, (-1,0) bewegt sich das Sprite nach links
+# (-1,-1) bewegt sich das Sprite diagonal nach links oben, (0,-1) bewegt sich das Sprite nach oben
+# wenn du Dezimalzahlen benutzt, bewegt sich das Sprite schräger
+
+gegner1 = Sprite(x= 100,y= 100,breite = 50,hoehe = 50,richtung = (1,1),bildpfad = "asteroid_1.png",name = "Asteroid_1", gesundheit = 25,energie = 50,speed = 2)
+#gegner2 = Sprite(x= 80,y= 30,breite = 50,hoehe = 50,richtung = (1,.5),bildpfad = "asteroid_2.png",name = "Runderoid", gesundheit = 25,energie = 50,speed = 1)
+gegnerliste = [gegner1]
+gegnersprites = gegnerliste
+spielersprite = Sprite(x= 100,y= 100,breite = 64,hoehe = 64,richtung = (0,0),bildpfad = "spielerbild.png",name = "spieler", gesundheit=100,energie = 50,speed = 1)
