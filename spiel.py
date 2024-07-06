@@ -39,6 +39,7 @@ class Spiel:
                     self.spiel_vorbei = True
 
             self.spiellogik_pruefen()
+            bewegung_aktualisieren(self.spielersprite,self.gegnersprites,pygame.mouse.get_pos())    
 
             self.SpielBild.spielbild_zeichnen(self.spielersprite,self.gegnersprites,self.spielstand)
             clock.tick(60)
@@ -54,7 +55,6 @@ class Spiel:
         """
         self.spielstand += kollision_pruefen(self.spielersprite,self.gegnersprites)
         self.spiel_vorbei = pruefe_spielende(self.spielstand, parameter = None)
-        bewegung_aktualisieren(self.spielersprite,self.gegnersprites,pygame.mouse.get_pos())
 
 # starte das Spiel
 spiel = Spiel(gegnersprites,spielersprite)
