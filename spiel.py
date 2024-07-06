@@ -21,6 +21,7 @@ class Spiel:
         self.spielersprite = spielersprite
         self.spielstand = 0
         self.spiel_vorbei = False
+        self.SpielBild = SpielBild
 
     def spiel_spielen(self):
         """
@@ -39,10 +40,10 @@ class Spiel:
 
             self.spiellogik_pruefen()
 
-            SpielBild.spielbild_zeichnen(self.spielersprite,self.gegnersprites,self.spielstand)
+            self.SpielBild.spielbild_zeichnen(self.spielersprite,self.gegnersprites,self.spielstand)
             clock.tick(60)
         
-        SpielBild.spielende_zeichnen(self.spielstand)
+        self.SpielBild.spielende_zeichnen(self.spielstand)
         pygame.quit()
 
     def spiellogik_pruefen(self):
