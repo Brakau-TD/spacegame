@@ -7,20 +7,43 @@ Zur Zeit gibt es drei Funktionen, die die Regeln des Spiels festlegen:
 - bewegung_aktualisieren: aktualisiert die Bewegung der Gegner und des Spielers
 """
 
-def kollision_pruefen(spielersprite,gegnersprite):
+from sprite import Sprite
+
+def neuer_sprite(x, y, breite, hoehe, richtung, bildpfad, name, gesundheit, energie, speed, anderesprites):
+    """
+    Erzeugt ein neues Sprite-Objekt mit den übergebenen Parametern und
+    fügt es der Liste der anderen Sprites hinzu.
+    """
+    anderesprites.append(Sprite(x, y, breite, hoehe, richtung, bildpfad, name, gesundheit, energie, speed).gebe_sprite())
+    return anderesprites
+
+def sprite_entfernen(anderesprites, element):
+    """
+    Entfernt ein Sprite-Objekt aus der Liste der anderen Sprites.
+    """
+    anderesprites.remove(element)
+    return anderesprites
+
+def kollision_pruefen(spielersprite,gegnersprite,anderesprites):
     """
     Prueft, ob es eine Kollision zwischen Spieler und Gegner gibt.
-    Falls die Gegner in einer Liste sind, wird für jeden Gegner geprüft, ob es eine Kollision gibt.
-    Falls es nur einen Gegner im Spiel gibt, wird nur für diesen geprüft
+    Es wird für jeden Gegner geprüft, ob es eine Kollision gibt.
+    Zu Anfang geben wir nur die Anzahl der Kollisionen zurück.
+    Das kann später noch erweitert werden, weil wir jetzt schon wissen, welche Gegner kollidiert sind (kollidiert_liste, nummer)
+    und welche anderen Sprites mit dem Spieler kollidiert sind (andere_kollision, nummer)
     """
     kollisionen = 0
-    if type(gegnersprite) == list:
-        for gegner in gegnersprite:
-            if gegner.ist_kollision(spielersprite):
-                kollisionen += 1
-    else: 
-        if gegnersprite.ist_kollision(spielersprite):
+    zaehler = 0
+    kollidiert_liste = []
+    andere_kollision = []
+    for nummer, gegner in enumerate(gegnersprite):
+        if gegner.ist_kollision(spielersprite):
             kollisionen += 1
+            kollidiert_liste.append(nummer)
+    for nummer,anderer_sprite in enumerate(anderesprites):
+        if anderer_sprite.ist_kollision(spielersprite):
+            zaehler += 1
+            andere_kollision.append(nummer)
     return kollisionen
 
 def pruefe_spielende(spielstand, parameter = None):

@@ -80,3 +80,4 @@ gegner1 = Sprite(x= 100,y= 100,breite = 50,hoehe = 50,richtung = (1,1),bildpfad 
 gegnerliste = [gegner1]
 gegnersprites = gegnerliste
 spielersprite = Sprite(x= 100,y= 100,breite = 64,hoehe = 64,richtung = (0,0),bildpfad = "spielerbild.png",name = "spieler", gesundheit=100,energie = 50,speed = 1)
+anderesprites = []

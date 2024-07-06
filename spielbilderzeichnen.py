@@ -6,18 +6,17 @@ class SpielbilderZeichnen:
     def __init__(self,spielfenster):
         self.spielfenster = spielfenster
 
-    def spielbild_zeichnen(self, spielersprite,gegnersprites,spielstandtext):
+    def spielbild_zeichnen(self, spielersprite,gegnersprites,anderesprites,spielstandtext):
         """
         Geht durch alle Spielobjekte, die an die Funktion übergeben werden und zeichnet sie auf das Spielfenster.
         Am Ende wird das Spielfenster aktualisiert, was bedeutet, dass die Änderungen sichtbar werden.
         """
         self.spielfenster.hintergrund_zeichnen()
         self.spielfenster.text_zeichnen(spielstandtext,(20,20))
-        if type(gegnersprites) == list:
-            for gegner in gegnersprites:
+        for gegner in gegnersprites:
                 gegner.zeichnen(self.spielfenster)
-        else:
-            gegnersprites.zeichnen(self.spielfenster)
+        for anderer_sprite in anderesprites:
+            anderer_sprite.zeichnen(self.spielfenster)
         spielersprite.zeichnen(self.spielfenster)
         pygame.display.update()
 

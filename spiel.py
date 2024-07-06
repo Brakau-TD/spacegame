@@ -5,13 +5,13 @@ Zuerst werden einige andere Module (Files mit Funktionen) importiert, die für d
 Danach wird das Spiel gestartet und die Spiellogik ausgeführt.
 """
 import pygame
-from spielobjekte import spielersprite, gegnersprites
+from sprite import spielersprite, gegnersprites,anderesprites
 from spielbilderzeichnen import SpielBild
-from hintergrundlogik import kollision_pruefen, pruefe_spielende, bewegung_aktualisieren
+from hintergrundlogik import kollision_pruefen, pruefe_spielende, bewegung_aktualisieren, sprite_entfernen, neuer_sprite
 
 
 class Spiel:
-    def __init__(self, gegnersprites, spielersprite):
+    def __init__(self, gegnersprites, spielersprite, anderesprites):
         """
         Die Klasse 'Spiel' ist die Hauptklasse des Spiels.
         Zu Anfang werden die wichtigen Attribute und Objekte des Spiels initialisiert
@@ -19,6 +19,7 @@ class Spiel:
         """
         self.gegnersprites = gegnersprites
         self.spielersprite = spielersprite
+        self.anderesprites = anderesprites # noch nicht benutzt
         self.spielstand = 0
         self.spiel_vorbei = False
         self.SpielBild = SpielBild
@@ -41,7 +42,7 @@ class Spiel:
             self.spiellogik_pruefen()
             bewegung_aktualisieren(self.spielersprite,self.gegnersprites,pygame.mouse.get_pos())    
 
-            self.SpielBild.spielbild_zeichnen(self.spielersprite,self.gegnersprites,self.spielstand)
+            self.SpielBild.spielbild_zeichnen(self.spielersprite,self.gegnersprites,self.anderesprites,self.spielstand)
             clock.tick(60)
         
         self.SpielBild.spielende_zeichnen(self.spielstand)
@@ -50,13 +51,13 @@ class Spiel:
     def spiellogik_pruefen(self):
         """
         Führt die Aktionen aus, die im Spiel vorkommen können.
-        die Funktionen kollision_pruefen, gewinnbedingung_pruefen und bewegung_aktualisieren werden aufgerufen.
+        die Funktionen kollision_pruefen, gewinnbedingung_pruefen werden aufgerufen.
         In den Import-Zeilen steht, in welchen Modulen diese Funktionen definiert sind.
         """
-        self.spielstand += kollision_pruefen(self.spielersprite,self.gegnersprites)
+        self.spielstand += kollision_pruefen(self.spielersprite,self.gegnersprites,self.anderesprites)
         self.spiel_vorbei = pruefe_spielende(self.spielstand, parameter = None)
 
 # starte das Spiel
-spiel = Spiel(gegnersprites,spielersprite)
+spiel = Spiel(gegnersprites,spielersprite,anderesprites)
 spiel.spiel_spielen()
 
