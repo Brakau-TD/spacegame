@@ -50,38 +50,38 @@ class Ball:
         self.posy = posy
         self.radius = radius
         self.speed = speed
-        self.color = color
-        self.direction = [1,0]
+        self.farbe = color
+        self.richtung = [1,0]
         self.player1_score = 0
         self.player2_score = 0
-        self.geekRect = pygame.Rect(posx, posy, radius, radius)
+        self.spielerpedal = pygame.Rect(posx, posy, radius, radius)
     
     def display(self):
-        pygame.draw.circle(screen, self.color, (self.posx, self.posy), self.radius)
+        pygame.draw.circle(screen, self.farbe, (self.posx, self.posy), self.radius)
 
     def kollision(self, striker):
-        if self.geekRect.colliderect(striker.geekRect):
-            self.direction[0] *= -1
-            self.direction[1] = striker.bewegung
+        if self.spielerpedal.colliderect(striker.geekRect):
+            self.richtung[0] *= -1
+            self.richtung[1] = striker.bewegung
     
     def update(self):
-        self.posx += self.speed * self.direction[0]
+        self.posx += self.speed * self.richtung[0]
         if self.posx <= 0 or self.posx >= WIDTH:  
             if self.posx <= 0:
                 self.player1_score += 1
             else:
                 self.player2_score += 1
             
-            self.direction[1] += random.uniform(-0.2, 0.2)  
-            self.direction[1] = max(min(self.direction[1], 1), -1)
+            self.richtung[1] += random.uniform(-0.2, 0.2)  
+            self.richtung[1] = max(min(self.richtung[1], 1), -1)
             
-            self.direction[0] *= -1
-        self.geekRect.x = round(self.posx)
+            self.richtung[0] *= -1
+        self.spielerpedal.x = round(self.posx)
         
-        self.posy += self.speed * self.direction[1]
+        self.posy += self.speed * self.richtung[1]
         if self.posy <= 0 or self.posy >= HEIGHT: 
-            self.direction[1] *= -1
-        self.geekRect.y = round(self.posy)
+            self.richtung[1] *= -1
+        self.spielerpedal.y = round(self.posy)
 
 # Spielfiguren erstellen
 pedallinks = Striker(posx=20, posy=HEIGHT // 2 - 50, width=10, height=100, speed=10, color=WHITE)
@@ -121,7 +121,7 @@ def spiel_spielen():
             bewegung = 0
         pedalrechts.update(bewegung)
 
-        # Clear the screen
+        # Bildschirm löschen
         screen.fill(BLACK)
 
         # Update ball position
@@ -129,10 +129,13 @@ def spiel_spielen():
         player1_score = ball.kollision(pedalrechts)
         ball.update()
         ball.display()
-        # Display paddles
+        # Spieler"figuren" zeichnen
         pedallinks.display()
         pedalrechts.display()
 
+        punktestand_zeichnen(player1_score, player2_score)
+
+        # Bildschirm aktualisieren
         pygame.display.flip()
         clock.tick(FPS)
 
